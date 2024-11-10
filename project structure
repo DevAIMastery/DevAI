@@ -1,0 +1,27 @@
+my-project/
+├── client/               # Frontend (React) code
+│   ├── public/           # Static files like index.html, favicon, etc.
+│   ├── src/              # Source files for React
+│   │   ├── components/   # React components
+│   │   ├── pages/        # Page components (if using React Router)
+│   │   ├── services/     # API call functions
+│   │   ├── App.js        # Main App component
+│   │   ├── index.js      # Entry point for React
+│   │   └── styles/       # CSS/SCSS files
+│   ├── .env              # Environment variables for the client
+│   ├── package.json      # Dependencies and scripts for React
+│   └── vite.config.js    # Configuration file for Vite (or webpack.config.js for Webpack)
+│
+├── server/               # Backend (Node.js) code
+│   ├── controllers/      # Route handler functions
+│   ├── models/           # Database models (if using a database)
+│   ├── routes/           # API routes
+│   ├── middleware/       # Middleware functions
+│   ├── utils/            # Utility functions
+│   ├── .env              # Environment variables for the server
+│   ├── server.js         # Entry point for the server
+│   └── package.json      # Dependencies and scripts for the server
+│
+├── .gitignore            # Git ignore file
+├── README.md             # Project documentation
+└── package.json          # Root package.json to manage scripts for both client and server
