@@ -1,5 +1,5 @@
 {
-  "name": "webscrapper",
+  "name": "client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.7",
+    "browser-image-compression": "^2.0.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-dropzone": "^14.3.5",
+    "react-icons": "^5.3.0",
+    "svgo": "^3.3.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
