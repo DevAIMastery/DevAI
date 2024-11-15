@@ -6,19 +6,30 @@ import "cropperjs/dist/cropper.css";
 
 const ImageCropper = () => {
   const cropperRef = useRef(null);
-  const [image, setImage] = useState(null); // To hold the uploaded image
-  const [croppedImage, setCroppedImage] = useState(null); // To hold the cropped image
+  const [image, setImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [croppedDimensions, setCroppedDimensions] = useState({ width: 0, height: 0 });
+  const [error, setError] = useState(""); // Error message state
 
-  // Handle file drop event
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
+      // Check if the file is an image
+      if (!file.type.startsWith("image/")) {
+        setError("Please upload a valid image file.");
+        setImage(null);
+        setCroppedImage(null);
+        setOriginalDimensions({ width: 0, height: 0 });
+        setCroppedDimensions({ width: 0, height: 0 });
+        return;
+      }
+
+      setError(""); // Clear any previous error message
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result);
-        setCroppedImage(null); // Reset cropped image when a new file is selected
+        setCroppedImage(null);
       };
       reader.readAsDataURL(file);
     }
@@ -34,7 +45,7 @@ const ImageCropper = () => {
     const cropper = cropperRef.current.cropper;
     if (cropper) {
       const croppedCanvas = cropper.getCroppedCanvas();
-      setCroppedImage(croppedCanvas.toDataURL()); // Store the base64 image string
+      setCroppedImage(croppedCanvas.toDataURL());
       setCroppedDimensions({
         width: croppedCanvas.width,
         height: croppedCanvas.height,
@@ -61,11 +72,11 @@ const ImageCropper = () => {
   };
 
   const handleUploadAnother = () => {
-    // Reset all states to initial values
     setImage(null);
     setCroppedImage(null);
     setOriginalDimensions({ width: 0, height: 0 });
     setCroppedDimensions({ width: 0, height: 0 });
+    setError(""); // Clear error on new upload
   };
 
   return (
@@ -81,6 +92,12 @@ const ImageCropper = () => {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
+      {error && (
+        <div style={{ color: "red", textAlign: "center", marginBottom: "20px" }}>
+          {error}
+        </div>
+      )}
+
       {!image && (
         <h4 style={{ color: "#333", fontSize: "22px", margin: "0px" }}>
           Upload Image to Crop
@@ -148,9 +165,9 @@ const ImageCropper = () => {
           <div
             style={{
               flex: 1,
-              maxWidth: "400px", // Set a fixed width for the container
-              height: "400px", // Set a fixed height for the container
-              overflow: "hidden", // Ensure content doesn't overflow
+              maxWidth: "400px",
+              height: "400px",
+              overflow: "hidden",
               borderRadius: "8px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
             }}
@@ -175,9 +192,9 @@ const ImageCropper = () => {
           <div
             style={{
               flex: 1,
-              maxWidth: "400px", // Set a fixed width for the container
-              height: "400px", // Set a fixed height for the container
-              overflow: "hidden", // Ensure content doesn't overflow
+              maxWidth: "400px",
+              height: "400px",
+              overflow: "hidden",
               borderRadius: "8px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
             }}

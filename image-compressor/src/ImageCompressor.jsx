@@ -8,11 +8,22 @@ const ImageCompressor = () => {
   const [compressedImage, setCompressedImage] = useState(null);
   const [imageSize, setImageSize] = useState({ initial: 0, final: 0 });
   const [compressionPercentage, setCompressionPercentage] = useState(100);
+  const [error, setError] = useState(""); // For displaying error messages
 
   const onDrop = async (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
+    // Check if the uploaded file is an image
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload a valid image file.");
+      setImage(null);
+      setCompressedImage(null);
+      setImageSize({ initial: 0, final: 0 });
+      return;
+    }
+
+    setError(""); // Clear any previous error messages
     setImage(file);
     setImageSize({ initial: file.size, final: 0 });
 
@@ -73,80 +84,93 @@ const ImageCompressor = () => {
     setCompressedImage(null);
     setImageSize({ initial: 0, final: 0 });
     setCompressionPercentage(100);
+    setError(""); // Clear error message on reset
   };
 
   return (
-    <div className="image-compressor">
+    <div className="image-compressor" style={{ fontFamily: "'Arial', sans-serif", padding: "20px", maxWidth: "700px", margin: "auto", borderRadius: "10px", boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)" }}>
+    
+      {error && (
+        <div style={{ color: "red", textAlign: "center", marginBottom: "20px" }}>
+          {error}
+        </div>
+      )}
+
       <div
         {...getRootProps()}
         style={{
           border: "2px dashed #007bff",
-          padding: "20px",
+          padding: "40px",
           width: "100%",
           textAlign: "center",
           cursor: "pointer",
           marginBottom: "20px",
-          maxWidth: "500px",
-          margin: "auto",
-          display: image ? "none" : "block",
+          borderRadius: "10px",
+          display: image ? "none" : "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f7f9fc",
+          transition: "background-color 0.3s ease",
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#eef3f9")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f7f9fc")}
       >
         <input {...getInputProps()} />
-        <div>
-          <FaUpload size={40} color="#007bff" />
-          <p>Drag and drop an image here, or click to select one</p>
-        </div>
+        <FaUpload size={50} color="#007bff" />
+        <p style={{ fontSize: "16px", color: "#333" }}>
+          Drag and drop an image here, or click to select one
+        </p>
       </div>
 
-      {/* Upload Another Image Button */}
       {compressedImage && (
-        <div style={{ textAlign: "center", marginTop: "20px" , marginBottom: "20px"}}>
-          <button
-            onClick={handleUploadAnother}
-            style={{
-              backgroundColor: "#28a745",
-              color: "white",
-              fontSize: "16px",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              transition: "background-color 0.3s ease",
-              maxWidth: "300px",
-              margin: "auto",
-            }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#218838")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#28a745")}
-          >
-            <FaUpload /> Upload Another Image
-          </button>
-        </div>
+        <button
+          onClick={handleUploadAnother}
+          style={{
+            backgroundColor: "#28a745",
+            color: "white",
+            fontSize: "16px",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            maxWidth: "300px",
+            margin: "20px auto",
+            transition: "background-color 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#218838")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#28a745")}
+        >
+          <FaUpload /> Upload Another Image
+        </button>
       )}
 
-      {/* Image Preview Section */}
       {image && (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "20px",
-            justifyItems: "center",
-            margin: "auto",
-            maxWidth: "500px",
-            marginTop: compressedImage ? "20px" : "0px",
+            display: "flex",
+            justifyContent: "center",
+            gap: "30px",
+            flexWrap: "wrap",
+            margin: "20px 0",
+            padding: "20px",
+            borderRadius: "10px",
+            backgroundColor: "#f7f9fc",
+            boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)"
           }}
         >
           <div style={{ textAlign: "center" }}>
             <img
               src={URL.createObjectURL(image)}
-              alt="Initial"
+              alt="Original"
               width="100%"
               style={{
                 borderRadius: "8px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                maxWidth: "200px",
               }}
             />
             <p>Original Size: <b>{(imageSize.initial / 1024).toFixed(2)} KB</b></p>
@@ -160,7 +184,8 @@ const ImageCompressor = () => {
                 width="100%"
                 style={{
                   borderRadius: "8px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  maxWidth: "200px",
                 }}
               />
               <p>Compressed Size: <b>{(imageSize.final / 1024).toFixed(2)} KB</b></p>
@@ -169,10 +194,11 @@ const ImageCompressor = () => {
         </div>
       )}
 
-      {/* Adjust Quality Slider */}
       {image && (
         <div style={{ textAlign: "center", marginTop: "20px", maxWidth: "300px", margin: "auto" }}>
-          <label>Adjust Compression: <b>{(Math.round(compressionPercentage * 100) / 100)}%</b></label>
+          <label style={{ display: "block", marginBottom: "10px" }}>
+            Adjust Compression: <b>{compressionPercentage}%</b>
+          </label>
           <input
             type="range"
             min="1"
@@ -185,32 +211,29 @@ const ImageCompressor = () => {
         </div>
       )}
 
-      {/* Download Button */}
       {compressedImage && (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <button
-            onClick={handleDownload}
-            style={{
-              backgroundColor: "#007bff",
-              color: "white",
-              fontSize: "16px",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              transition: "background-color 0.3s ease",
-              maxWidth: "300px",
-              margin: "auto",
-            }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#007bff")}
-          >
-            <FaDownload /> Download Compressed Image
-          </button>
-        </div>
+        <button
+          onClick={handleDownload}
+          style={{
+            backgroundColor: "#007bff",
+            color: "white",
+            fontSize: "16px",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            maxWidth: "300px",
+            margin: "20px auto",
+            transition: "background-color 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#007bff")}
+        >
+          <FaDownload /> Download Compressed Image
+        </button>
       )}
     </div>
   );
