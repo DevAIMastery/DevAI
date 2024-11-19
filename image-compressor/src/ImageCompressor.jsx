@@ -15,8 +15,8 @@ const ImageCompressor = () => {
     if (!file) return;
 
     // Check if the uploaded file is an image
-    if (!file.type.startsWith("image/")) {
-      setError("Please upload a valid image file.");
+    if (!["image/png", "image/svg+xml"].includes(file.type)) {
+      setError("Please upload a valid image file (png or svg).");
       setImage(null);
       setCompressedImage(null);
       setImageSize({ initial: 0, final: 0 });
@@ -95,33 +95,40 @@ const ImageCompressor = () => {
           {error}
         </div>
       )}
+      {!image && (
 
-      <div
-        {...getRootProps()}
-        style={{
-          border: "2px dashed #007bff",
-          padding: "40px",
-          width: "100%",
-          textAlign: "center",
-          cursor: "pointer",
-          marginBottom: "20px",
-          borderRadius: "10px",
-          display: image ? "none" : "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f7f9fc",
-          transition: "background-color 0.3s ease",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#eef3f9")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f7f9fc")}
-      >
-        <input {...getInputProps()} />
-        <FaUpload size={50} color="#007bff" />
-        <p style={{ fontSize: "16px", color: "#333" }}>
-          Drag and drop an image here, or click to select one
-        </p>
-      </div>
+        
+        
+  <div
+    {...getRootProps()}
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      padding: "30px",
+      border: "2px dashed #ccc",
+      borderRadius: "8px",
+      transition: "border-color 0.2s ease-out",
+      "&:hover": {
+        borderColor: "#999",
+      },
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#eef3f9")}
+    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f7f9fc")}
+  >
+    
+    <h3>Upload Image to Compress</h3>
+    <input {...getInputProps()} />
+    <FaUpload size={60} color="#073653" />
+    <p style={{ fontSize: "16px", color: "#333" }}>
+      Drag and drop an image here, or click to select one
+    </p>
+  </div>
+)}
+
+        
 
       {compressedImage && (
         <button
